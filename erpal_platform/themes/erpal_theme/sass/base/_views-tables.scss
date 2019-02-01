@@ -1,0 +1,16 @@
+.view-empty {
+  p {
+    clear: both;
+  }
+}
+
+.views-table {
+  font-size: $font-size-minor;
+  clear: both;
+  width: 100%;
+}
+
+.view-footer {
+  font-size: $font-size-small;
+  color: rgba(#000, .3);
+}

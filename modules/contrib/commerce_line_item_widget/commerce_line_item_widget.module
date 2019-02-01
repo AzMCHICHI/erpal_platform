@@ -1,0 +1,496 @@
+<?php
+
+/**
+ * @file
+ * Provide dynamic widget for commerce line item field.
+ */
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function commerce_line_item_widget_field_widget_info() {
+  $widgets = array();
+
+  $widgets['commerce_line_item_widget'] = array(
+    'label' => t('Dynamic line item widget'),
+    'field types' => array('commerce_line_item_reference'),
+    'settings' => array(),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function commerce_line_item_widget_field_widget_settings_form($field, $instance) {
+  $form = array();
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function commerce_line_item_widget_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $settings = $instance['widget']['settings'];
+
+  // Get current product from current Line item.
+  if (!empty($form_state['values']['commerce_line_items'][LANGUAGE_NONE][$delta])) {
+
+    $current_line_item = $form_state['values']['commerce_line_items'][LANGUAGE_NONE][$delta];
+    if (!empty($current_line_item['commerce_product'][LANGUAGE_NONE][0]['product_id'])) {
+
+      $product = commerce_product_load($current_line_item['commerce_product'][LANGUAGE_NONE][0]['product_id']);
+    }
+  }
+
+  // If Product was changed just load new product.
+  if (!empty($form_state['triggering_element']['#field_name']) && $form_state['triggering_element']['#field_name'] == 'commerce_product') {
+    $array_parents = $form_state['triggering_element']['#array_parents'];
+
+    array_pop($array_parents);
+    array_pop($array_parents);
+    if (end($array_parents) == $delta && !empty($product)) {
+
+      $values = drupal_array_get_nested_value($form_state['values'], $array_parents);
+
+      // Check to to which line item types current product type have relations.
+      $suitable_line_item_types = array();
+      foreach ($settings as $type => $type_settings) {
+        if ($product && is_array($type_settings) && $type_settings['product_type'] && $type_settings['product_type'] == $product->type) {
+          $suitable_line_item_types[] = $type;
+        }
+      }
+
+      if (!empty($values['line_item']->line_item_id)) {
+        $items[$delta]['line_item_id'] = $values['line_item']->line_item_id;
+      }
+    }
+  }
+
+  $element['#delta'] = $delta;
+  $element['#line_item_type'] = $settings['default_type'];
+  if (!empty($items[$delta]['line_item_id'])) {
+
+    // Load old line item.
+    $line_item = commerce_line_item_load($items[$delta]['line_item_id']);
+    $element['#line_item_type'] = $line_item->type;
+
+    // If product was changed need totally change and line item.
+    if (!empty($suitable_line_item_types) && !in_array($line_item->type, $suitable_line_item_types)) {
+      $line_item = commerce_line_item_new($suitable_line_item_types[0], $element['#entity']->order_id);
+      $element['#line_item_type'] = $suitable_line_item_types[0];
+      unset($items[$delta]['line_item_id']);
+    }
+  }
+  else {
+
+    // If we don't have any line item, just create new one.
+    $line_item = commerce_line_item_new($settings['default_type'], $element['#entity']->order_id);
+
+    // On ajax we can already have type of line item.
+    if (!empty($current_line_item['line_item']->type)) {
+
+      $line_item = commerce_line_item_new($current_line_item['line_item']->type, $element['#entity']->order_id);
+      $element['#line_item_type'] = $current_line_item['line_item']->type;
+    }
+
+    // Check of which type we can create line item.
+    if (!empty($suitable_line_item_types)) {
+      $line_item = commerce_line_item_new($suitable_line_item_types[0], $element['#entity']->order_id);
+      $element['#line_item_type'] = $suitable_line_item_types[0];
+    }
+  }
+
+  $element += array(
+    '#type' => 'fieldset',
+    '#tree' => TRUE,
+    '#language' => $langcode,
+    '#prefix' => '<div id="commerce-line-item-widget-wrapper--' . $delta . '">',
+    '#suffix' => '</div>',
+  );
+  $element['line_item'] = array(
+    '#type' => 'value',
+    '#value' => $line_item,
+  );
+
+  $element['line_item_label'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#description' => t('Supply the line item label to be used for this line item.'),
+    '#default_value' => $line_item->line_item_label,
+    '#maxlength' => 255,
+    '#size' => 15,
+    '#required' => !empty($line_item->line_item_id),
+    '#fieldset' => 'line_item_details',
+    '#weight' => -3,
+  );
+  $element['quantity'] = array(
+    '#type' => 'textfield',
+    '#datatype' => 'integer',
+    '#title' => t('Quantity'),
+    '#description' => t('The quantity of line items.'),
+    '#default_value' => (int) $line_item->quantity,
+    '#size' => 4,
+    '#maxlength' => max(4, strlen($line_item->quantity)),
+    '#required' => !empty($line_item->line_item_id),
+    '#fieldset' => 'line_item_details',
+    '#weight' => 5,
+  );
+
+  // If some product is passed, check which field need prepopulate, and
+  // prepopulate it.
+  if (!empty($product)) {
+    $input = &$form_state['input']['commerce_line_items'][$langcode][$delta];
+    
+    // Set title from product.
+    unset($input['line_item_label']);
+    $element['line_item_label']['#default_value'] = t('!title (!sku)', array('!title' => $product->title, '!sku' => $product->sku));
+    commerce_line_item_widget_pre_populate($settings, $line_item, $product, $input);
+  }
+  
+  $element += _field_invoke_default('form', 'commerce_line_item', $line_item, $form, $form_state);
+
+  // Added ajax for product field.
+  if (!empty($element['commerce_product'])) {
+    $element['commerce_product']['#weight'] = -4;
+    $element['commerce_product'][$langcode]['#required'] = FALSE;
+    $element['commerce_product'][$langcode]['#ajax'] = array(
+      'callback' => 'commerce_line_item_widget_field_widget_callback',
+      'wrapper' => 'commerce-line-item-widget-wrapper--' . $delta,
+      'event' => 'change blur'
+    );
+  }
+
+  $element['commerce_unit_price'][$langcode][0]['amount']['#required'] = !empty($line_item->line_item_id);
+
+  $element['delete'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Delete'),
+    '#weight' => 100,
+  );
+
+  $element['commerce_display_path']['#access'] = FALSE;
+  $element['#element_validate'] = array('commerce_line_item_widget_line_item_validate');
+  return $element;
+}
+
+/**
+ * Ajax callback function.
+ */
+function commerce_line_item_widget_field_widget_callback($form, &$form_state) {
+  $array_parents = $form_state['triggering_element']['#array_parents'];
+  array_pop($array_parents);
+  array_pop($array_parents);
+
+  $element = drupal_array_get_nested_value($form, $array_parents);
+
+  // Remove the '_weight' element inserted by the field API.
+  unset($element['_weight']);
+
+  return $element;
+}
+
+/**
+ * Validation callback for a commerce_line_item element.
+ */
+function commerce_line_item_widget_line_item_validate($element, &$form_state, $form) {
+  $value = array();
+  $error = FALSE;
+  $delta = $element['#delta'];
+  $line_item_type = $element['#line_item_type'];
+
+  if (!empty($form_state['values']['commerce_line_items'][LANGUAGE_NONE][$delta])) {
+    $values = $form_state['values']['commerce_line_items'][LANGUAGE_NONE][$delta];
+    $line_item = clone $values['line_item'];
+    $line_item->line_item_label = $values['line_item_label'];
+    $line_item->quantity = $values['quantity'];
+
+    if (!empty($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'edit-submit') {
+      if (!empty($values['delete']) && !empty($line_item->line_item_id)) {
+        commerce_line_item_delete($line_item->line_item_id);
+        return;
+      }
+
+      // Validate the quantity of each line item.
+      $element_name = implode('][', $element['quantity']['#parents']);
+      $quantity = $element['quantity']['#value'];
+
+      if (!is_numeric($quantity) || $quantity <= 0) {
+        $error = TRUE;
+        form_set_error($element_name, t('You must specify a positive number for the quantity'));
+      }
+      elseif ($element['quantity']['#datatype'] == 'integer' &&
+        (int) $quantity != $quantity) {
+        $error = TRUE;
+        form_set_error($element_name, t('You must specify a whole number for the quantity.'));
+      }
+      else {
+        $line_item->quantity = $quantity;
+      }
+
+      // Manually validate the unit price of each line item.
+      $unit_price = $values['commerce_unit_price'];
+      $amount = $unit_price[$element['#language']][0]['amount'];
+      $currency_code = $unit_price[$element['#language']][0]['currency_code'];
+      $name = implode('][',
+        array_merge(
+          $element['commerce_unit_price']['#parents'],
+          array($element['#language'], 0, 'amount')
+        )
+      );
+
+      if (!empty($line_item->line_item_label) && empty($amount)) {
+        $error = TRUE;
+        form_set_error($name, t("Amount can't be empty."));
+      }
+
+      if (!empty($amount) && empty($line_item->line_item_label)) {
+        $element_name = implode('][', $element['line_item_label']['#parents']);
+        $error = TRUE;
+        form_set_error($element_name, t("Title can't be empty."));
+      }
+
+      // Validate all attached fields.
+      field_attach_form_validate('commerce_line_item', $line_item, $element, $form_state);
+
+      // Display an error message for a non-numeric unit price.
+      if (!empty($amount) && !empty($line_item->line_item_label)) {
+        if (!is_numeric($amount)) {
+          $error = TRUE;
+          form_set_error($name, t('You must enter a numeric value for the unit price.'));
+        }
+        elseif ($amount <> $line_item->commerce_unit_price[$element['#language']][0]['amount'] ||
+          $currency_code <> $line_item->commerce_unit_price[$element['#language']][0]['currency_code']) {
+          // Otherwise update the unit price amount if it has changed.
+          $line_item->commerce_unit_price = $unit_price;
+        }
+
+        // If this type specifies a valid add form callback function...
+        if ($callback = commerce_line_item_type_callback($line_item_type, 'add_form_submit')) {
+          // Allow the callback to alter data onto the line item to be saved and
+          // to return an error message if something goes wrong.
+          $error = $callback($line_item, $element, $form_state, $form);
+        }
+
+        // If we didn't end up with any errors...
+        if (empty($error)) {
+          // Save it and add it to the line item reference field's values array.
+          // Notify field widgets.
+          field_attach_submit('commerce_line_item', $line_item, $element, $form_state);
+          commerce_line_item_rebase_unit_price($line_item);
+          commerce_line_item_save($line_item);
+
+          // If the item is saved, we set a variable to notify the user the
+          // need of saving the order.
+          $form_state['line_item_save_warning'] = TRUE;
+        }
+      }
+    }
+    if (!empty($line_item->line_item_id)) {
+      $value = array('line_item_id' => $line_item->line_item_id);
+      form_set_value($element, $value, $form_state);
+    }
+  }
+
+}
+
+/**
+ * Pre populate fields in line item in relation to product.
+ */
+function commerce_line_item_widget_pre_populate($settings, $line_item, $product, &$input) {
+  foreach ($settings as $type => $type_settings) {
+    if (is_array($type_settings) && $line_item->type == $type &&!empty($type_settings['product_type']) && $type_settings['product_type'] == $product->type) {
+      $line_item_wrapper = entity_metadata_wrapper('commerce_line_item', $line_item, array('bundle' => $type));
+      $product_wrapper = entity_metadata_wrapper('commerce_product', $product);
+      foreach ($type_settings['fields'] as $line_item_field => $product_field) {
+        if (isset($line_item_wrapper->{$line_item_field}) && isset($product_wrapper->{$product_field})) {
+          $line_item_wrapper->{$line_item_field}->set($product_wrapper->{$product_field}->value());
+          unset($input[$line_item_field]);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORMID_alter().
+ *
+ * Alter the widget type form; dynamically add the Dynamic widget
+ * Configuration form when it is needed.
+ */
+function commerce_line_item_widget_form_field_ui_widget_type_form_alter(&$form, &$form_state) {
+
+  // Alter the widget type select: configure #ajax so that we can respond to
+  // changes in its value: whenever it is set to "commerce_line_item_widget", we add
+  // the commerce_line_item_widget config UI.
+  $form['basic']['widget_type']['#ajax'] = array(
+    'event'    => 'change',
+    'callback' => 'commerce_line_item_widget_field_ui_widget_settings_ajax',
+    'wrapper'  => 'commerce-line-item-widget-config-replace',
+    'method'   => 'replace'
+  );
+
+  $current_widget_type = (isset($form_state['input']['widget_type'])) ? $form_state['input']['widget_type'] : $form_state['build_info']['args'][0]['widget']['type'];
+  if ($current_widget_type == 'commerce_line_item_widget') {
+    $field = field_info_field($form['#field_name']);
+    $instance = field_info_instance($form['#entity_type'], $form['#field_name'], $form['#bundle']);
+    $settings = $instance['widget']['settings'];
+
+    // Make the config form AJAX-updateable.
+    $form['commerce_line_item_widget'] = array(
+      '#prefix' => '<div id="commerce-line-item-widget-config-replace">',
+      '#suffix' => '</div>',
+      '#type' => 'fieldset',
+      '#title' => t('Dynamic line item widget'),
+      '#tree' => TRUE,
+    );
+
+    // Prepare array with line items types.
+    $line_item_types = array();
+    foreach (commerce_line_item_types() as $key => $type) {
+      $line_item_types[$key] = $type['name'];
+    }
+    $form['commerce_line_item_widget']['default_type'] = array(
+      '#type' => 'select',
+      '#title' => t('Default Line item type'),
+      '#options' => $line_item_types,
+      '#default_value' => !empty($settings['default_type']) ? $settings['default_type'] : 'product',
+      '#description' => t('Choose line item type which you want to see by default.'),
+    );
+
+    // Prepare settings form for each line item type.
+    foreach ($line_item_types as $line_item_type => $title) {
+      $form['commerce_line_item_widget'][$line_item_type] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Settings for %type line item type', array('%type' => $title)),
+      );
+
+      // Prepare array with line items types.
+      $product_types = array('_none' => '<none>');
+      foreach (commerce_product_types() as $product_type => $product_type_settings) {
+        $product_types[$product_type] = $product_type_settings['name'];
+      }
+      $form['commerce_line_item_widget'][$line_item_type]['product_type'] = array(
+        '#type' => 'select',
+        '#title' => t('Product type'),
+        '#options' => $product_types,
+        '#default_value' => !empty($settings[$line_item_type]['product_type']) ? $settings[$line_item_type]['product_type'] : '_none',
+        '#description' => t('Choose product type which you want to load %type line item type.', array('%type' => $title)),
+        '#ajax' => array(
+          'event'    => 'change',
+          'callback' => 'commerce_line_item_widget_product_type_select',
+          'wrapper'  => 'commerce-line-item-widget-' . drupal_clean_css_identifier($line_item_type) . '-config-replace',
+          'method'   => 'replace'
+        ),
+      );
+      $form['commerce_line_item_widget'][$line_item_type]['fields'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Settings for fields'),
+        '#prefix' => '<div id="commerce-line-item-widget-' . drupal_clean_css_identifier($line_item_type) . '-config-replace">',
+        '#suffix' => '</div>',
+      );
+
+      // Load all field instances for selected product type.
+      $product_type_fields = array('_none' => '<none>');
+      if (!empty($form_state['values']['commerce_line_item_widget'][$line_item_type]['product_type'])) {
+        $selected_product_type = $form_state['values']['commerce_line_item_widget'][$line_item_type]['product_type'];
+      }
+      elseif (!empty($settings[$line_item_type]['product_type'])) {
+        $selected_product_type = $settings[$line_item_type]['product_type'];
+      }
+
+      if (!empty($selected_product_type)) {
+        $product_type_instances = field_info_instances('commerce_product', $selected_product_type);
+
+        // Add correct order to fields.
+        commerce_line_item_widget_sort_instances($product_type_instances);
+
+        $product_type_fields = $product_type_fields + drupal_map_assoc(array_keys($product_type_instances));
+      }
+
+      $line_item_type_fields = field_info_instances('commerce_line_item', $line_item_type);
+
+      // Delete fields which shouldn't be pre populated.
+      unset($line_item_type_fields['commerce_total']);
+      unset($line_item_type_fields['commerce_product']);
+      unset($line_item_type_fields['commerce_display_path']);
+
+      // Allow other modules to add/edit/delete instances for line item type.
+      drupal_alter('commerce_line_item_widget_map_fields', $line_item_type_fields, $line_item_type, $settings);
+
+      // Add correct order to fields.
+      commerce_line_item_widget_sort_instances($line_item_type_fields);
+
+      foreach ($line_item_type_fields as $instance) {
+        $form['commerce_line_item_widget'][$line_item_type]['fields'][$instance['field_name']] = array(
+          '#type' => 'select',
+          '#title' => $instance['field_name'],
+          '#options' => !empty($product_type_fields) ? $product_type_fields : array(),
+          '#default_value' => !empty($settings[$line_item_type]['fields'][$instance['field_name']]) ? $settings[$line_item_type]['fields'][$instance['field_name']] : '_none',
+        );
+      }
+    }
+    $form['#submit'][] = 'commerce_line_item_widget_settings_submit';
+  }
+  else {
+    $form['commerce_line_item_widget'] = array(
+      '#prefix' => '<div id="commerce-line-item-widget-config-replace">',
+      '#suffix' => '</div>',
+    );
+  }
+}
+
+/**
+ * Submit callback; updates the field settings.
+ */
+function commerce_line_item_widget_settings_submit(&$form, &$form_state) {
+  $form_values = $form_state['values'];
+  $bundle = $form['#bundle'];
+  $entity_type = $form['#entity_type'];
+  $field_name = $form['#field_name'];
+
+  // Retrieve the stored instance settings to merge with the incoming values.
+  $instance = field_read_instance($entity_type, $field_name, $bundle);
+
+  // Set config for widget.
+  $widget_type = field_info_widget_types($form_values['widget_type']);
+  $widget_module = $widget_type['module'];
+
+  $instance['widget']['settings'] = $form_values['commerce_line_item_widget'];
+
+  try {
+    field_update_instance($instance);
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('There was a problem changing the widget for field %label.', array('%label' => $instance['label'])), 'error');
+  }
+}
+
+/**
+ * AJAX callback; field UI widget settings form.
+ */
+function commerce_line_item_widget_field_ui_widget_settings_ajax($form, &$form_state) {
+  return $form['commerce_line_item_widget'];
+}
+
+/**
+ * AJAX callback; field UI widget settings form.
+ */
+function commerce_line_item_widget_product_type_select($form, &$form_state) {
+  $array_parents = $form_state['triggering_element']['#array_parents'];
+  array_pop($array_parents);
+  $array_parents[] = 'fields';
+
+  return drupal_array_get_nested_value($form, $array_parents);
+}
+
+/**
+ * Order instances in drupal way.
+ */
+function commerce_line_item_widget_sort_instances(&$instances) {
+  foreach ($instances as &$instance) {
+    $instance['weight'] = $instance['widget']['weight'];
+  }
+  uasort($instances, 'drupal_sort_weight');
+}

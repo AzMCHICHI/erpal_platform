@@ -1,0 +1,29 @@
+/** */
+$msg-config: (
+  success: (
+    name: status,
+    side: $color-msg-success,
+    back: $color-msg-success-light,
+    icon: check-circle
+  ),
+  error: (
+    name: error,
+    side: $color-msg-error,
+    back: $color-msg-error-light,
+    icon: exclamation-circle
+  ),
+  warning: (
+    name: warning,
+    side: $color-msg-warning,
+    back: $color-msg-warning-light,
+    icon: exclamation-triangle
+  ),
+  info: (
+    side: $color-msg-info,
+    back: $color-msg-info-light,
+    icon: info-circle
+  )
+);
+
+/** */
+$msg-side-width: 22px;

@@ -1,0 +1,61 @@
+.ds-2col-stacked {
+  @include display-flex;
+  @include flex-flow(row wrap);
+
+  .group-header,
+  .group-footer {
+    @include flex(1 100%);
+  }
+
+  .group-header {
+    @extend %clearfix;
+    margin-bottom: $extended-spacing;
+
+    .field {
+      float: left;
+
+      + .field {
+        margin-left: $inner-spacing;
+      }
+    }
+  }
+
+  .group-left,
+  .group-right {
+    .no-flexbox & {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    > div + div {
+      margin-top: $extended-spacing;
+    }
+  }
+
+  .group-left {
+    @include flex(1);
+    padding-right: $extended-spacing;
+
+    .no-flexbox & {
+      clear: left;
+      width: 75%;
+    }
+  }
+
+  .group-right {
+    @include flex(0 0 25%);
+
+    .no-flexbox & {
+      width: 24%;
+    }
+  }
+
+  .label-above {
+    margin-bottom: .125em;
+    font-weight: bold;
+  }
+}
+
+.field--label-above .field__label {
+  margin-bottom: .125em;
+}

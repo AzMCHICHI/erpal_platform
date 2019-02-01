@@ -1,0 +1,24 @@
+name = ERPAL CRM UI
+description = Provides user interface for ERPAL CRM module.
+core = 7.x
+package = ERPAL CRM
+
+dependencies[] = crm_core_activity_ui
+dependencies[] = crm_core_contact_ui
+dependencies[] = crm_core_relationship_ui
+dependencies[] = entity_token
+dependencies[] = erpal_core_ui
+dependencies[] = erpal_crm
+dependencies[] = page_manager
+dependencies[] = panels
+dependencies[] = panels_tabs
+dependencies[] = views_content
+dependencies[] = ds_extras
+dependencies[] = panels_mini
+
+; Information added by Drupal.org packaging script on 2016-10-05
+version = "7.x-3.0-beta3+1-dev"
+core = "7.x"
+project = "erpal_platform"
+datestamp = "1475660863"
+

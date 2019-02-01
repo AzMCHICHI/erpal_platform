@@ -1,0 +1,203 @@
+/** */
+%jqms-list-section {
+  padding: 5px $jqms-spacing;
+  border-bottom: 1px solid $jqms-color-border;
+}
+
+/** */
+%jqms-list-item {
+  display: block;
+  padding: 3px $jqms-spacing;
+}
+
+.#{$jqms-namespace} {
+  &--display {
+    position: relative;
+    padding: 0 1.5em 0 .4em;
+    border: 1px solid $jqms-color-border;
+    border-radius: 0;
+    background-color: #fff;
+    text-align: left;
+    font-size: 1em;
+    line-height: 26px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      background-color: $color-list-hover;
+    }
+  }
+
+  &--icon {
+    @include translateY(-50%);
+    position: absolute;
+    top: 50%;
+    right: .25em;
+    display: block;
+
+    &:after {
+      display: block;
+      border: .375em solid transparent;
+      border-top-color: #000;
+      border-bottom-width: 0;
+      content: '';
+    }
+  }
+
+  &--list-wrap {
+    position: absolute;
+    z-index: 100;
+    display: none;
+    margin-top: -1px;
+    border: 1px solid $jqms-color-border;
+    background-color: #fff;
+  }
+
+  &--list {
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    max-height: 220px;
+    list-style-type: none;
+
+    [type="checkbox"] {
+      position: relative;
+      top: -2px;
+      display: inline-block;
+      margin: 0 5px 0 0;
+      cursor: pointer;
+    }
+  }
+
+  &--option {
+    @extend %jqms-list-item;
+    cursor: pointer;
+
+    span {
+      white-space: nowrap;
+    }
+
+    &:hover {
+      background-color: $color-list-hover;
+    }
+  }
+
+  &--optgroup-wrap {
+    label {
+      @extend %jqms-list-item;
+      font-weight: bold;
+
+      .#{$jqms-namespace}--is-multiple & {
+        cursor: pointer;
+      }
+    }
+
+    &.#{$jqms-namespace}--disabled label {
+      cursor: not-allowed;
+    }
+
+    ul {
+      padding-left: 0;
+    }
+
+    li {
+      padding-left: $jqms-spacing * 2;
+    }
+
+    &:hover {
+      background-color: lighten($color-list-hover, 10);
+    }
+
+    + .#{$jqms-namespace}--optgroup-wrap {
+      border-top: 1px dotted $jqms-color-border;
+    }
+  }
+
+  &--selected {
+    background-color: $color-list-selected;
+  }
+
+  &--disabled {
+    opacity: .5;
+    cursor: not-allowed;
+
+    [type="checkbox"] {
+      cursor: inherit;
+    }
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    .#{$jqms-namespace}--disabled {
+      opacity: 1;
+    }
+  }
+
+  &--filter {
+    $button-size: $form-input-height;
+
+    @extend %jqms-list-section;
+    display: flex;
+    align-items: center;
+
+    label,
+    input,
+    button {
+      display: inline-block;
+    }
+
+    label:after {
+      content: ':';
+    }
+
+    input {
+      margin: 0 5px;
+      padding: $form-input-padding;
+      width: 80px;
+      flex-grow: 1;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    button {
+      padding: 0;
+      width: $button-size;
+      height: $button-size;
+      border-width: 0;
+      border-radius: 0;
+      text-indent: -9999em;
+      white-space: nowrap;
+      line-height: $button-size;
+      cursor: pointer;
+
+      &:before {
+        @include translateX(-50%);
+        @include font-awesome-icon(times);
+        position: relative;
+        left: 50%;
+        float: left;
+        text-indent: 0;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+  &--bulk {
+    @extend %jqms-list-section;
+
+    button {
+      + button {
+        margin-left: 5px;
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.order-merged-tab {
+  .panel-pane {
+    + .panel-pane {
+      margin-top: 2em;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+
+name = "LoginToboggan Rules Integration"
+description = "Integrates LoginToboggan with Rules module"
+core = "7.x"
+
+dependencies[] = logintoboggan
+dependencies[] = rules
+
+
+; Information added by drush on 2016-10-05
+version = "7.x-1.5+9-dev"
+core = "7.x"
+project = "logintoboggan"
+datestamp = "1475660908"
+

@@ -1,0 +1,53 @@
+/** */
+%input-border-default {
+  @include single-transition(border-color, $transition-duration-default);
+  border-color: $input-border-color-default;
+
+  &:focus {
+    @include box-shadow(none);
+    outline: none;
+    border-color: $input-border-color-hover;
+
+    + .field-suffix {
+      border-color: $input-border-color-hover;
+    }
+  }
+
+  &:hover {
+    border-color: $color-border-highlight;
+
+    + .field-suffix {
+      border-color: $color-border-highlight;
+    }
+  }
+
+  &:disabled {
+    color: $color-copy-disabled;
+    border-color: $input-border-color-disabled;
+    background: $input-background-color-disabled;
+
+    + .field-suffix {
+      border-color: $input-border-color-disabled;
+    }
+  }
+
+  &.error {
+    border: 1px solid $color-msg-error;
+  }
+}
+
+/**
+  default input styling
+  @requires %input-border-default
+  */
+%input {
+  @extend %input-border-default;
+  @include border-radius(0);
+  @include appearance(none);
+  padding: $form-input-padding;
+  outline: none;
+  border-width: 1px;
+  border-style: solid;
+  background: #fff;
+  cursor: auto;
+}

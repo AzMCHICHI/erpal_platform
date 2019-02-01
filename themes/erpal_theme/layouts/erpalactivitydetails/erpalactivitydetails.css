@@ -1,0 +1,20 @@
+.page-admin .erpal-activity-details-header,
+.page-admin .erpal-activity-details-body {
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.page-admin .erpal-activity-details-header {
+    padding: 10px;
+    border: 1px dashed #ddd;
+}
+
+.page-admin .erpal-activity-details-header-left,
+.page-admin .erpal-activity-details-header-right {
+    float: left;
+    width: calc(50% - 5px);
+}
+
+.page-admin .erpal-activity-details-header-right {
+    float: right;
+}

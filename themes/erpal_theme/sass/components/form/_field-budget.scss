@@ -1,0 +1,11 @@
+.field-name-field-budget {
+  &-total,
+  &-available {
+    .form-item.form-type {
+      &-textfield,
+      &-select {
+        display: inline-block;
+      }
+    }
+  }
+}

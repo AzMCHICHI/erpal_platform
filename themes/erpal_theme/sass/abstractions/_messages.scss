@@ -1,0 +1,26 @@
+/**
+  setting the background-color and side-background-color for messages
+  @param {Color} $back - background-color
+  @param {Color} $side - side-color
+  */
+@mixin message-color($back, $side) {
+  background-color: $back;
+
+  &:before {
+    background-color: $side;
+  }
+}
+
+/**
+  mixin to set the individual background-`$color` and `$icon` for the messages
+  @param {Map} $data - desired side-color and background-color (with opacity)
+  @requires {mixin} message-color
+  @requires {mixin} font-awesome-icon
+  */
+@mixin message($data) {
+  @include message-color(map-get($data, back), map-get($data, side));
+
+  &:after {
+    @include font-awesome-icon(map-get($data, icon));
+  }
+}

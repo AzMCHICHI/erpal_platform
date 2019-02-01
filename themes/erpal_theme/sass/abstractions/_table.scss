@@ -1,0 +1,28 @@
+/** */
+%row-stripe {
+  &:nth-child(odd) {
+    background-color: $color-table-odd;
+  }
+
+  &:nth-child(even) {
+    background-color: $color-table-even;
+  }
+}
+
+/** */
+%table-field-reset {
+  table,
+  tr {
+    border-width: 0;
+  }
+
+  thead {
+    th {
+      padding: 0;
+    }
+
+    label {
+      padding-bottom: $ds;
+    }
+  }
+}

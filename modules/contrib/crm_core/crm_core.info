@@ -1,0 +1,12 @@
+name = CRM Core
+description = Provides basic functionality for a CRM Core.
+package = CRM Core
+core = 7.x
+
+
+; Information added by drush on 2016-09-29
+version = "7.x-1.0-rc1+6-dev"
+core = "7.x"
+project = "crm_core"
+datestamp = "1475156676"
+

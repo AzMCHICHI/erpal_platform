@@ -1,0 +1,103 @@
+/**
+  @group color
+ */
+
+/* --- color definitions --- */
+/** @link http://chir.ag/projects/name-that-color/ */
+$color-dove-gray: #737373;
+/** */
+$color-dorado: #645c58;
+/** */
+$color-silver: #ccc;
+/** */
+$color-cloud: #d0cecd;
+/** */
+$color-gallery: #eee;
+/** */
+$color-mercury: #e5e5e5;
+/** */
+$color-silver-chalice: #b2b2b2;
+/** */
+$color-alto: #d9d9d9;
+/** */
+$color-dorado: #645c58;
+/** */
+$color-wild-sand: #f6f6f6;
+/** */
+$color-deep-sea: #00895d;
+/** */
+$color-monza: #ca0513;
+/** */
+$color-red-devil: #8d050a;
+/** */
+$color-orient: #006487;
+/** */
+$color-bondi-blue: #009fb7;
+/** */
+$color-yellow-orange: #ffa63d;
+/** */
+$color-outer-space: #2c3438;
+/** */
+$color-gray: #8e8e8e;
+
+/* --- general use-cases --- */
+/** */
+$color-bg-highlight: rgba($color-yellow-orange, .5);
+/** */
+$color-border-highlight: $color-yellow-orange;
+
+/** */
+$color-table-odd: $color-gallery;
+/** */
+$color-table-even: $color-wild-sand;
+
+/** */
+$color-button-delete: $color-monza;
+
+/** */
+$color-button-action: $color-gray;
+
+/** */
+$color-button-disabled: $color-silver;
+
+
+/* --- messages colors --- */
+/** */
+$color-msg-error: $color-monza;
+/** */
+$color-msg-error-light: #efb3b7; // ~ msg color at 30% opacity on white background
+
+/** */
+$color-msg-success: $color-deep-sea;
+/** */
+$color-msg-success-light: #b1dbcd;
+
+/** */
+$color-msg-info: $color-orient;
+/** */
+$color-msg-info-light: #b2d0db;
+
+/** */
+$color-msg-warning: $color-yellow-orange;
+/** */
+$color-msg-warning-light: #fee4c3;
+
+
+/* --- typo colors --- */
+/** default copy color */
+$color-copy: #000;
+/** copy color for disabled form elements */
+$color-copy-disabled: $color-dorado;
+/** default link color */
+$color-link: $color-orient;
+
+/* --- border colors --- */
+/** */
+$input-border-color-default: $color-alto;
+/** */
+$input-border-color-disabled: $input-border-color-default;
+/** */
+$input-border-color-hover: darken($input-border-color-default, 15);
+
+/** */
+$input-background-color-disabled: $color-gallery;

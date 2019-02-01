@@ -1,0 +1,72 @@
+.page-crm-core-activity {
+  .field + .field {
+    margin-top: $ds;
+  }
+
+  ul .field + .field {
+    margin-top: 0;
+  }
+
+  .label-above {
+    margin-bottom: .125em;
+    font-weight: bold;
+  }
+
+  // sales forecast
+  .erpal-budget-sales-forecast {
+    .label-inline {
+      display: inline-block;
+      width: 130px;
+    }
+
+    .field--type-datetime {
+      display: inline-block;
+    }
+
+    .field + .field {
+      margin-top: 3px;
+    }
+  }
+
+  // view-panes
+  .pane-views-panes {
+    h2 {
+      margin-bottom: .5em;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    + .pane-views-panes {
+      margin-top: $inner-spacing;
+    }
+  }
+
+  .activity-list {
+    ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+
+    li + li {
+      margin-top: .25em;
+    }
+
+    .field--type-datetime {
+      display: inline-block;
+      width: 150px;
+    }
+
+    .activity-type {
+      display: inline-block;
+      text-indent: -9999em;
+      white-space: nowrap;
+
+      &:before {
+        float: left;
+        margin-right: 0;
+        text-indent: 0;
+      }
+    }
+  }
+}

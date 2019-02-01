@@ -1,0 +1,19 @@
+.page-admin .erpalcomments,
+.page-admin .erpalcomments-header,
+.page-admin .erpalcomments-body,
+.page-admin .erpalcomments-footer {
+    clear: both;
+}
+
+.page-admin .erpalcomments-avatar,
+.page-admin .erpalcomments-wrap {
+    float: left;
+}
+
+.page-admin .erpalcomments-avatar {
+    width: 25%;
+}
+
+.page-admin .erpalcomments-wrap {
+    width: 75%;
+}

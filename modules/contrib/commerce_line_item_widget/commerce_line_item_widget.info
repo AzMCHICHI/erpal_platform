@@ -1,0 +1,17 @@
+name = Dynamic widget for commerce line item field
+description = Provide dynamic widget for commerce line item field
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = commerce
+dependencies[] = commerce_line_item
+dependencies[] = commerce_custom_product
+
+
+
+; Information added by Drupal.org packaging script on 2015-09-11
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "commerce_line_item_widget"
+datestamp = "1441965240"
+

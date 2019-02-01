@@ -1,0 +1,102 @@
+/**
+  @access private
+  */
+$line-item-padding-right: 85px;
+
+.field-name-commerce-line-items {
+  @extend %form-buttons;
+  @extend %table-field-reset;
+
+  .fieldset-wrapper {
+    @include display-flex;
+    @include flex-wrap(wrap);
+    position: relative;
+
+    .no-flexbox & {
+      padding-right: $line-item-padding-right; // @TODO spacing for the delete-checkbox
+    }
+
+    .fieldset-wrapper {
+      padding: 0;
+    }
+
+    > div:not(.field-name-field-payment-modality) {
+      @extend %form-multi-table-content;
+    }
+
+    // @TODO temporary - should be replaced by a delete-button
+    div.form-type-checkbox {
+      // have to overload selector
+      @include align-self(center);
+      @include flex-grow(1);
+      float: none;
+      margin: 20px 0 -1px;
+      text-align: right;
+
+      .no-flexbox & {
+        position: absolute;
+        top: 15px;
+        right: 0;
+        float: left;
+        margin: 0;
+      }
+    }
+  }
+
+  .field-widget-commerce-product-reference-autocomplete {
+    position: relative;
+
+    .ajax-progress-throbber {
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+      padding: $form-input-padding;
+      height: $form-input-height - 2px;
+      background-color: rgba(#fff, .75);
+    }
+
+    .throbber {
+      margin-top: 2px;
+    }
+  }
+
+  // @TODO date-field fix
+  .field-name-field-line-item-delivery-date {
+    legend {
+      @extend %legend-to-label;
+      margin-bottom: 6px;
+      font-size: $font-size-small;
+    }
+  }
+
+  .field-type-entityreference {
+    @include order(100);
+    @include flex(1 null 100%);
+    margin-bottom: 0;
+    max-width: 100%;
+  }
+
+  // position adjustment for multiple currencies
+  .field-name-commerce-unit-price {
+    .commerce-price-full {
+      > div {
+        margin: 0;
+        white-space: normal;
+      }
+
+      button {
+        // @TODO: patch widget width config
+        top: -1px;
+        margin: {
+          left: -3px;
+          bottom: -1px; // compensate negative top for line break
+        }
+      }
+    }
+  }
+
+  .form-item [type="text"] {
+    max-width: 250px;
+  }
+}

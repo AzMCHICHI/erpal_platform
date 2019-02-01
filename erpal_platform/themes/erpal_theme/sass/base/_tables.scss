@@ -1,0 +1,37 @@
+table {
+  clear: both;
+  width: 100%;
+  border: 1px solid $color-alto;
+  font-size: $font-size-minor;
+}
+
+// reset
+td,
+td.active,
+th,
+tr.even,
+tr.odd {
+  background-color: transparent;
+}
+
+tr {
+  border: 1px solid $color-alto;
+}
+
+thead .views-align-right:not(.views-field-views-bulk-operations) {
+  text-align: left;
+}
+
+tbody {
+  tr:nth-child(odd) {
+    background-color: rgba(#000, .05);
+  }
+}
+
+th {
+  padding: $ds;
+}
+
+td {
+  padding: 5px 10px;
+}

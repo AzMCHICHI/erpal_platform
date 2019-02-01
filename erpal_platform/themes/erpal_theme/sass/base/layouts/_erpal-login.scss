@@ -1,0 +1,96 @@
+.erpal-login {
+  $img-file: 'erpal_logo_big.png';
+  $img-height: image-height($img-file);
+  $img-half-height: $img-height / 2;
+
+  @extend %main-content;
+  margin: $img-half-height auto;
+  max-width: 440px;
+
+  &-wrap:before {
+    $padding: 6px;
+
+    display: block;
+    margin: (0 - $img-half-height) auto 0;
+    width: image-width($img-file) + 2 * $padding;
+    height: $img-height + 2 * $padding;
+    border-radius: 50%;
+    background: #fff image-url($img-file) no-repeat center $padding;
+    content: '';
+  }
+
+  .pane-pane-messages :first-child {
+    margin-top: $inner-spacing;
+  }
+
+  h2,
+  #login-message {
+    margin: $inner-spacing 0 ($inner-spacing + $default-spacing);
+  }
+
+  h2 {
+    display: none;
+
+    .page-user-password & {
+      display: block;
+    }
+  }
+
+  input {
+    max-width: 100%;
+  }
+
+  .toboggan-unified #login-links {
+    margin: $inner-spacing (0 - $inner-spacing);
+    border-bottom: 1px solid $input-border-color-default;
+    font-size: 0;
+
+    a.login-link {
+      position: relative;
+      top: 2px;
+      display: inline-block;
+      margin-bottom: -1px;
+      padding: $default-spacing $default-spacing 8px;
+      border: 1px solid $input-border-color-default;
+      border-radius: 5px 5px 0 0;
+      background-color: $input-border-color-default;
+      color: $color-copy;
+      text-decoration: none;
+      font-size: $font-size-copy;
+      line-height: $base-line-height;
+
+      + .login-link {
+        margin-left: 5px;
+      }
+    }
+
+    a.lt-active {
+      top: 0;
+      padding-bottom: $default-spacing;
+      border-bottom-color: #fff;
+      background-color: #fff;
+    }
+  }
+
+  .form-actions {
+    margin-bottom: 0;
+    text-align: center;
+
+    button {
+      margin: 0;
+    }
+  }
+
+  #register-form [type="submit"] {
+    @include button-color($color-deep-sea);
+
+    &:before {
+      @include font-awesome-icon(user);
+    }
+  }
+
+  .field-name-field-user-crm-contact {
+    display: none;
+  }
+}
+

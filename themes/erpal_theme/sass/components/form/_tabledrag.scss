@@ -1,0 +1,13 @@
+.tabledrag-processed {
+  margin-bottom: $default-spacing;
+
+  .draggable td:first-child {
+    position: relative;
+    padding-left: $drag-handle-width;
+  }
+
+  .tabledrag-handle {
+    right: auto;
+    width: $drag-handle-width;
+  }
+}

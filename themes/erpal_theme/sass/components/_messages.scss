@@ -1,0 +1,102 @@
+// page messages wrapper
+.pane-page-messages {
+  margin-bottom: $extended-spacing;
+}
+
+.messagewrapper .showlink,
+.messagewrapper .messages,
+.messages {
+  position: relative;
+  margin: 0;
+  padding: $ds $ds $ds ($msg-side-width + $ds);
+  border-width: 0;
+  border-radius: 0;
+  background: none;
+  color: $color-copy;
+
+  &.messages {
+    //to override timed_messages themeing
+    border: none;
+  }
+
+  &:before,
+  &:after {
+    position: absolute;
+    left: 0;
+  }
+
+  // background
+  &:before {
+    top: 0;
+    bottom: 0;
+    display: block;
+    width: $msg-side-width;
+    content: '';
+  }
+
+  // icon
+  &:after {
+    @include translateY(-50%);
+    top: 50%;
+    width: $msg-side-width;
+    color: #fff;
+    text-align: center;
+    text-indent: 0;
+  }
+
+  @each $type, $data in $msg-config {
+    @if map-has-key($data, name) {
+      &.#{map-get($data, name)} {
+        @include message($data);
+      }
+    }
+  }
+}
+
+.messagewrapper .messages,
+.messages {
+  + .messages {
+    margin-top: $ds;
+  }
+}
+
+.messagewrapper {
+  z-index: 1;
+
+  .messages {
+    z-index: 1;
+  }
+
+  .showlink {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    height: 20px;
+    display: block;
+    width: 100%;
+  }
+
+  // close
+  .hidelink {
+    background: none;
+
+    &:after {
+      @include font-awesome-icon(times);
+      float: right;
+      width: 100%;
+      color: #fff;
+      text-align: center;
+      text-indent: 0;
+      line-height: 26px;
+    }
+  }
+
+  @each $type, $data in $msg-config {
+    @if map-has-key($data, name) {
+      .#{map-get($data, name)} .hidelink:hover:after {
+        color: map-get($data, side);
+      }
+    }
+  }
+}
+

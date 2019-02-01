@@ -1,0 +1,213 @@
+$form-icons: sprite-map("form_icons/*.png", $spacing: 20px);
+$form-icon-offset-x: 10px;
+$form-icon-offset-y: 9px;
+
+.form-actions {
+  margin-top: $extended-spacing;
+}
+
+/* --- button --- */
+[type="submit"],
+.form-actions > a,
+.form-actions button {
+  @include button-default();
+}
+
+#edit-submit,
+button[id*="save"],
+.form-submit {
+  @include button-color($color-deep-sea);
+
+  &:before {
+    @include font-awesome-icon(check);
+  }
+}
+
+#edit-delete {
+  @include button-default($color-monza);
+
+  &:before {
+    @include font-awesome-icon(times);
+  }
+}
+
+#edit-cancel {
+  @include button-default($color-dorado);
+
+  &:before {
+    @include font-awesome-icon(times);
+  }
+}
+
+/* --- input & textarea --- */
+textarea {
+  @extend %input;
+}
+
+$form-types: (text, password, color, date, datetime, datetime-local, email, month, number, search, tel, time, url, week);
+@each $type in $form-types {
+  [type="#{$type}"] {
+    @extend %input;
+  }
+}
+
+[type="text"] {
+  &.form-autocomplete {
+    .js & {
+      background-position: right 8px;
+
+      &:disabled {
+        background-image: none;
+      }
+    }
+
+    &.throbbing {
+      .js & {
+        background-position: right -13px;
+      }
+    }
+  }
+}
+
+.form-autocomplete {
+  background-position: right 7px;
+}
+
+/* --- radio & checkbox --- */
+[type="radio"],
+[type="checkbox"] {
+  &:checked + .field-label label.option {
+    // setting this before hover prevents the need to re-rewrite it
+    background-color: $color-alto;
+  }
+
+  + .field-label label.option {
+    @include transition-property(border-color, background-color);
+    @include transition-duration($transition-duration-default);
+    position: relative;
+    display: inline-block;
+    padding: 3px 10px 0 26px;
+    height: 28px;
+    border: 1px solid $color-alto;
+    background: rgba($color-alto, .5) $form-icons no-repeat;
+    font-size: 13px;
+    line-height: 20px;
+    cursor: pointer;
+
+    &:hover {
+      z-index: 3;
+      border-color: $color-border-highlight;
+      background-color: $color-bg-highlight;
+    }
+  }
+
+  &:disabled + .field-label label.option {
+    border: 1px solid $color-alto;
+    background-color: $input-background-color-disabled;
+    color: $color-copy-disabled;
+    cursor: default;
+  }
+}
+
+[type="checkbox"] {
+  &:not(.vbo-select) {
+    display: none;
+  }
+
+  + .field-label label.option {
+    @include sprite-background-position($form-icons, checkbox_unchecked, $form-icon-offset-x, $form-icon-offset-y);
+  }
+
+  &:checked + .field-label label.option {
+    @include sprite-background-position($form-icons, checkbox_checked, $form-icon-offset-x, $form-icon-offset-y);
+  }
+}
+
+[type="radio"] {
+  display: none;
+
+  + .field-label label.option {
+    @include sprite-background-position($form-icons, radio_unchecked, $form-icon-offset-x, $form-icon-offset-y);
+  }
+
+  &:checked + .field-label label.option {
+    @include sprite-background-position($form-icons, radio_checked, $form-icon-offset-x, $form-icon-offset-y);
+  }
+}
+
+.form-checkboxes {
+  @extend %clearfix;
+
+  .form-type-checkbox {
+    float: left;
+
+    + .form-type-checkbox {
+      @include rem(margin-left, 2px);
+
+      fieldset.collapsible & {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.form-radios {
+  @extend %clearfix;
+
+  .form-type-radio {
+    float: left;
+
+    + .form-type-radio {
+      margin-left: -1px;
+
+      fieldset.collapsible & {
+        margin-top: 0;
+      }
+    }
+  }
+
+  .description {
+    margin: {
+      left: 2px;
+      right: $ds;
+    }
+  }
+}
+
+/* --- labels --- */
+.form-item label {
+  @extend %label;
+}
+
+.field-label label {
+  display: inline-block;
+}
+
+// file upload
+.field-type-image {
+  display: inline-block; // prevent spreading over the whole width
+}
+
+/* --- fieldsets --- */
+fieldset.collapsible {
+  margin-bottom: $ds;
+  padding: $ds;
+  border: 1px solid $input-border-color-default;
+
+  .fieldset-wrapper {
+    margin-top: $ds;
+  }
+
+  .form-item {
+    margin-bottom: 0;
+
+    + .form-item {
+      margin-top: $ds;
+    }
+  }
+}
+
+.label-inline {
+  float: left;
+  font-weight: bold;
+}

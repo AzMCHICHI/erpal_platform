@@ -1,0 +1,16 @@
+name = Dynamic widget for commerce line item use for cart
+description = Provide functionaluty to use settings from dynamic widget for commerce line item field for  commerce cart
+package = Commerce (contrib)
+core = 7.x
+
+dependencies[] = commerce_line_item_widget
+
+files[] = includes/views/handlers/commerce_line_item_widget_cart_form.inc
+
+
+
+; Information added by drush on 2016-10-05
+version = ""
+project = "commerce_line_item_widget"
+datestamp = "1475660920"
+

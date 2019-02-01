@@ -1,0 +1,77 @@
+.comment-wrapper {
+  margin-top: 40px;
+  padding-right: 40px;
+  width: 75%;
+
+  h2 {
+    font-weight: bold;
+    font-size: $font-size-copy;
+  }
+
+  p {
+    margin: 0;
+
+    + p {
+      margin-top: .75em;
+    }
+  }
+}
+
+.erpalcomments {
+  clear: both;
+  margin-bottom: $extended-spacing;
+}
+
+.erpalcomments-avatar,
+.erpalcomments-wrap {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.erpalcomments-avatar {
+  > div {
+    $size: 60px;
+
+    @include single-transition(border-color, $transition-duration-default);
+    width: $size;
+    height: $size;
+    border: 1px solid $input-border-color-default;
+    border-radius: 50%;
+    background-color: $input-border-color-default;
+
+    &:hover {
+      border-color: $color-border-highlight;
+    }
+  }
+}
+
+.erpalcomments-wrap {
+  padding-left: $ds;
+}
+
+.erpalcomments-footer,
+.erpalcomments-header {
+  > * {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  > * + * {
+    margin-left: $ds * 2;
+  }
+}
+
+.erpalcomments-header {
+  margin-bottom: 1em;
+}
+
+.erpalcomments-body {
+}
+
+.erpalcomments-footer {
+  margin-top: 1em;
+
+  .links--inline li {
+    margin-right: .5em;
+  }
+}

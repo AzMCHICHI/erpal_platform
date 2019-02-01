@@ -1,0 +1,19 @@
+.ui-dialog .ui-dialog-titlebar-close {
+  display: block;
+  border: none;
+  background-color: transparent;
+
+  &:before {
+    @include font-awesome-icon(times);
+    @include translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: inherit;
+  }
+
+  &:hover {
+    color: $color-dorado;
+  }
+}
+

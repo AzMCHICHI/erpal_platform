@@ -1,0 +1,44 @@
+{
+  "name": "jquery-ui.multiselect.widget",
+  "version": "1.4.4",
+  "main": "src/jquery-ui.multiselect.widget.js",
+  "ignore": [
+    "**/.*",
+    "config.rb",
+    "Gemfile",
+    "Gemfile.lock",
+    "Gruntfile.js",
+    "Guardfile",
+    "package.json",
+    "readme.md",
+    "bower_components",
+    "tests",
+    "demo",
+    "sass"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.1",
+    "jquery-ui": "~1.11.2"
+  },
+  "homepage": "https://github.com/dirkpeter/jquery-ui.multiselect.widget",
+  "authors": [
+    "Dirk Peter <dirk.peter@me.com>"
+  ],
+  "description": "yet another jquery multiselect widget",
+  "keywords": [
+    "jquery-ui",
+    "select",
+    "multiselect",
+    "widget"
+  ],
+  "license": "MIT",
+  "_release": "1.4.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.4.4",
+    "commit": "f38cf041d3def7d70f9bb92f4edcf8a3fe2e3819"
+  },
+  "_source": "https://github.com/dirkpeter/jquery-ui.multiselect.widget.git",
+  "_target": "~1.4.4",
+  "_originalSource": "https://github.com/dirkpeter/jquery-ui.multiselect.widget.git"
+}

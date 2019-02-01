@@ -1,0 +1,20 @@
+.erpal-activity-details {
+  &-header,
+  &-body {
+    clear: both;
+  }
+
+  &-header {
+    margin-bottom: $extended-spacing;
+
+    &-left,
+    &-right {
+      float: left;
+      width: calc(50% - #{$extended-spacing / 2});
+    }
+
+    &-right {
+      float: right;
+    }
+  }
+}
